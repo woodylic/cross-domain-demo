@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title of the document</title>
+        <script type="text/javascript" src="scripts/jquery.min.js"></script>
+        <script type="text/javascript">
+            $.ajax({
+                type: "get",
+                async: false,
+                url: "http://localhost:3000/greeting",
+                dataType: "jsonp",
+                 /**
+                 * 关于jsonp和jsonpCallback参数：
+                 * jsonpCallback用于定义jsonp回调函数名称，jsonpCallback会随着http request被传递到server端，query param则用jsonp定义。
+                 * 
+                 * 在本例中，server端对应的代码如下：
+                 * var callbackHandler = req.query.callback;                //从request得到callbackHandler
+                 * res.send(callbackHandler + "(" + theJsonResult + ");");  //json result作为返回结果的callbackHandler，会通过
+                 *                                                          //动态添加script节点加载到页面，加载完成后callbackHandler()会执行。
+                 *                                                          //如果执行成功，success会执行，callbackHandler返回的json则作为success的参数。
+                 */
+                jsonp: "callback",  
+                jsonpCallback: "callbackHandler",
+                success: function(json){
+                    $("#main").text("greeting in " + json.language + ": " + json.greeting);
+                },
+                error: function(){
+                    $("#main").text("failed");
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div id="main"></div>
+    </body>
+</html>
